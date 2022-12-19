@@ -182,6 +182,7 @@ int MFS_Read(int inum, char *buffer, int offset, int nbytes) {
     for(int z = 0; z< nbytes; z++) {
         buffer[z] = msg.bufferReceived[z];
     }
+    printf("buffer: %s\n",buffer);
 
     return msg.rc;
 }
