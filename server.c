@@ -302,7 +302,6 @@ void visualizeDirBlock(dir_block_t* dirBlock){
 	}
 }
 
-
 int addDirEntryToDirectoryInode(inode_t* dinode, int dinum, inode_t* addedInode, dir_ent_t* copyOfDirEntryToAdd){
 	if(dinode->type != MFS_DIRECTORY) {
 		return -1;

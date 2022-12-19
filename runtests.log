@@ -9,19 +9,12 @@ build project using make
 Trying to build project using make
 make
 gcc -o mkfs mkfs.c -Wall
-./mkfs -f real_disk_image.img -d 1000 -i 200
-total blocks        1010
-  inodes            200 [size of each: 128]
-  data blocks       1000
-layout details
-  inode bitmap address/len 1 [1]
-  data bitmap address/len  2 [1]
 gcc -o main main.c -Wall -L. -lmfs -g
 ldd main
-	linux-vdso.so.1 (0x00007fff017a3000)
-	libmfs.so => ./libmfs.so (0x00007ff9837fa000)
-	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ff9835b5000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007ff983806000)
+	linux-vdso.so.1 (0x00007ffecfdc8000)
+	libmfs.so => ./libmfs.so (0x00007fcd3a999000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fcd3a754000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007fcd3a9a5000)
 
 
 test build PASSED
@@ -41,8 +34,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6132
-/tmp/tmpLs3vQP/p/server 6132 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 6367
+/tmp/tmpBwv4yS/p/server 6367 /home/richie/private/COMPSCI537/P4/test.img
 -------Describes IMG + super block-----------
 SUPERBLOCK
  inode bitmap address 1 [len 1]
@@ -69,8 +62,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5721
-/tmp/tmpLs3vQP/p/server 5721 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 8854
+/tmp/tmpBwv4yS/p/server 8854 /home/richie/private/COMPSCI537/P4/test.img
 -------Describes IMG + super block-----------
 SUPERBLOCK
  inode bitmap address 1 [len 1]
@@ -97,8 +90,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7850
-/tmp/tmpLs3vQP/p/server 7850 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 8939
+/tmp/tmpBwv4yS/p/server 8939 /home/richie/private/COMPSCI537/P4/test.img
 ('START BLOCK 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00END BLOCK 1')
 ('START BLOCK 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xc1\xec\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
 Failure: Corrupt data returned by read
@@ -122,8 +115,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6006
-/tmp/tmpLs3vQP/p/server 6006 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 6613
+/tmp/tmpBwv4yS/p/server 6613 /home/richie/private/COMPSCI537/P4/test.img
 -------Describes IMG + super block-----------
 SUPERBLOCK
  inode bitmap address 1 [len 1]
@@ -150,8 +143,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9670
-/tmp/tmpLs3vQP/p/server 9670 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 5934
+/tmp/tmpBwv4yS/p/server 5934 /home/richie/private/COMPSCI537/P4/test.img
 Failure: Corrupt data returned by read
 
 
@@ -173,8 +166,8 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7316
-/tmp/tmpLs3vQP/p/server 7316 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 5174
+/tmp/tmpBwv4yS/p/server 5174 /home/richie/private/COMPSCI537/P4/test.img
 Failure: Corrupt data returned by read
 
 
@@ -196,8 +189,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8174
-/tmp/tmpLs3vQP/p/server 8174 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 6178
+/tmp/tmpBwv4yS/p/server 6178 /home/richie/private/COMPSCI537/P4/test.img
 31
 write more than need
 Failure: Corrupt data returned by read
@@ -221,13 +214,19 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5598
-/tmp/tmpLs3vQP/p/server 5598 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 7988
+/tmp/tmpBwv4yS/p/server 7988 /home/richie/private/COMPSCI537/P4/test.img
+-------Describes IMG + super block-----------
+SUPERBLOCK
+ inode bitmap address 1 [len 1]
+ data bitmap address 2 [len 1]
+ inode region address 3 [len 1]
+ data region address 4 [len 32]
+ num inodes: 32 ;num data: [len 32]
 
 
-test dir1 FAILED
+test dir1 PASSED
  (check root for dot entries)
- Timelimit (10.0s) exceeded
 
 ('starting', 'dir2')
 
@@ -237,15 +236,14 @@ Test dir2
 create a new directory and check it
 
 **********************************************************************
-client:: MFS_Lookup READ failed; libmfs.c
 total blocks        36
   inodes            32 [size of each: 128]
   data blocks       32
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5617
-/tmp/tmpLs3vQP/p/server 5617 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 9335
+/tmp/tmpBwv4yS/p/server 9335 /home/richie/private/COMPSCI537/P4/test.img
 -------Describes IMG + super block-----------
 SUPERBLOCK
  inode bitmap address 1 [len 1]
@@ -272,8 +270,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8222
-/tmp/tmpLs3vQP/p/server 8222 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 9451
+/tmp/tmpBwv4yS/p/server 9451 /home/richie/private/COMPSCI537/P4/test.img
 -------Describes IMG + super block-----------
 SUPERBLOCK
  inode bitmap address 1 [len 1]
@@ -300,8 +298,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6627
-/tmp/tmpLs3vQP/p/server 6627 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 7827
+/tmp/tmpBwv4yS/p/server 7827 /home/richie/private/COMPSCI537/P4/test.img
 -------Describes IMG + super block-----------
 SUPERBLOCK
  inode bitmap address 1 [len 1]
@@ -328,8 +326,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8563
-/tmp/tmpLs3vQP/p/server 8563 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 7338
+/tmp/tmpBwv4yS/p/server 7338 /home/richie/private/COMPSCI537/P4/test.img
 Failure: MFS_Unlink returned failure pinum=0 name='test'
 
 
@@ -351,8 +349,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8429
-/tmp/tmpLs3vQP/p/server 8429 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 7802
+/tmp/tmpBwv4yS/p/server 7802 /home/richie/private/COMPSCI537/P4/test.img
 Failure: MFS_Unlink returned failure pinum=0 name='test'
 
 
@@ -374,8 +372,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5025
-/tmp/tmpLs3vQP/p/server 5025 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 5279
+/tmp/tmpBwv4yS/p/server 5279 /home/richie/private/COMPSCI537/P4/test.img
 Failure: MFS_Unlink returned failure pinum=1 name='testfile'
 
 
@@ -397,8 +395,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7011
-/tmp/tmpLs3vQP/p/server 7011 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 5297
+/tmp/tmpBwv4yS/p/server 5297 /home/richie/private/COMPSCI537/P4/test.img
 -------Describes IMG + super block-----------
 SUPERBLOCK
  inode bitmap address 1 [len 1]
@@ -425,8 +423,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9498
-/tmp/tmpLs3vQP/p/server 9498 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 8392
+/tmp/tmpBwv4yS/p/server 8392 /home/richie/private/COMPSCI537/P4/test.img
 Failure: Corrupt data returned by read
 
 
@@ -448,8 +446,8 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5850
-/tmp/tmpLs3vQP/p/server 5850 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 8789
+/tmp/tmpBwv4yS/p/server 8789 /home/richie/private/COMPSCI537/P4/test.img
 -------Describes IMG + super block-----------
 SUPERBLOCK
  inode bitmap address 1 [len 1]
@@ -476,8 +474,8 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9081
-/tmp/tmpLs3vQP/p/server 9081 /home/richie/private/COMPSCI537/P4/test.img
+Starting server on port 5285
+/tmp/tmpBwv4yS/p/server 5285 /home/richie/private/COMPSCI537/P4/test.img
 -------Describes IMG + super block-----------
 SUPERBLOCK
  inode bitmap address 1 [len 1]
@@ -520,9 +518,8 @@ test maxfile2 FAILED
  (write more blocks than possible)
  Corrupt data returned by read
 
-test dir1 FAILED
+test dir1 PASSED
  (check root for dot entries)
- Timelimit (10.0s) exceeded
 
 test dir2 PASSED
  (create a new directory and check it)
@@ -558,5 +555,5 @@ test bigdir PASSED
 test deep PASSED
  (create many deeply nested directories)
 
-Passed 10 of 19 tests.
-Overall 10 of 19
+Passed 11 of 19 tests.
+Overall 11 of 19
