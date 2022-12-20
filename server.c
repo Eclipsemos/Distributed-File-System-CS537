@@ -59,13 +59,14 @@ unsigned int get_bit(unsigned int *bitmap, int position) {
 
 int get_new_inum()
 {
-	for(int i = 0; i < SUPERBLOCKPTR->num_inodes; i++){
+	for(int i = 0; i < 128; i++)
+	{
         int bit = get_bit(in_bm_addr, i);
 		if(bit==0)
 		{
 			return i;
 		}
-    	}
+    }
 	return -1;
 }
 
@@ -87,27 +88,30 @@ int server_shutdown(message_t* m){
 int server_creat(int pinum, int type, char *name)
 {
 	// LOOK UP PROCESS FOR THE PINUM //
+	//printf("pinum :%d type:%d name:%s\n",pinum,type,name);
 	inode_t* inode_parent = in_rn_addr + pinum *sizeof(inode_t);// get the parent inode
 	int size = inode_parent->size;
 	int entry_num = (UFS_BLOCK_SIZE / sizeof(dir_ent_t)) * (size / UFS_BLOCK_SIZE) + ((size % UFS_BLOCK_SIZE) / sizeof(dir_ent_t));
 	int num_block = size / (UFS_BLOCK_SIZE + 1) + 1;
 	int data_blocks[num_block]; // stores the blocks' addr (in blocks)
     dir_ent_t* entries[entry_num];
+	
     for(int i = 0; i < num_block; i++)
 	{
         data_blocks[i] = inode_parent->direct[i];
     }
 
 	int remain_entry = entry_num;
+	
 	for(int i=0;i<num_block;i++)
 	{
 		int curr_data_block = data_blocks[i];
 		unsigned long curr_data_block_offset = curr_data_block * UFS_BLOCK_SIZE;
-		unsigned long num_loop = (remain_entry < 32)? remain_entry:32;
+		unsigned long num_loop = (remain_entry < 128)? remain_entry:128;
 		void* curr_data_addr = (void*)((unsigned long)curr_data_block_offset+(unsigned long)head);
 		for(int j=0;j<num_loop;j++)
 		{
-			entries[j+32*i] = (dir_ent_t*)curr_data_addr;
+			entries[j+128*i] = (dir_ent_t*)curr_data_addr;
 			remain_entry--;
 			curr_data_addr = (void*)curr_data_addr; // real address
 			curr_data_addr += sizeof(dir_ent_t);
@@ -123,7 +127,7 @@ int server_creat(int pinum, int type, char *name)
 			break;
 		}
 	}
-
+	
 	if(found_name==1)
 	{
 		//printf("Server::create:: ALEADY EXISTED\n");
@@ -148,20 +152,22 @@ int server_creat(int pinum, int type, char *name)
 	}
 
 
-
 	//find the place to add
-	int next_free_block = 0;
-	while((int)parent->direct[next_free_block]!=-1)
+	int last_free_block = 0;
+	while((int)parent->direct[last_free_block]!=-1)
 	{
-		next_free_block++;
+		last_free_block++;
 	}
-	next_free_block--;
+	last_free_block--;
 	
-	int entry_left = parent->size/sizeof(dir_ent_t);
-	unsigned long dir_block = parent->direct[next_free_block];
+	int entry_left = (parent->size%(UFS_BLOCK_SIZE+1))/sizeof(dir_ent_t);
+	//how many entries in the new block
+	unsigned long dir_block = parent->direct[last_free_block];
+	//last free block
     unsigned long block_offset = dir_block * UFS_BLOCK_SIZE;
-
+	
 	void* dir_block_addr = (void*)(block_offset+(unsigned long)head);
+	//where the block is
 	int j=0;
 	for( j=0;j<entry_left;j++)
 	{
@@ -169,13 +175,15 @@ int server_creat(int pinum, int type, char *name)
         dir_block_addr = (void*)dir_block_addr; 
         dir_block_addr += sizeof(dir_ent_t);
 	}
-	j-=1;
+	//[e1][e2][e3][now]
 	entries[entry_left] = (dir_ent_t*) dir_block_addr;
-
+	//
 	if(sizeof(entries)<(4096-32))
 	{
+		//printf("Times:%d ",name[0]);
 		strcpy(entries[entry_left]->name,name);	
 		entries[entry_left]->inum = get_new_inum();
+		//printf("Name compare: 1: %s   2: %s  3:%d \n",entries[entry_left]->name, name, entry_left);
 	}
 
 	if(sizeof(entries)>=(4096-32))
@@ -184,7 +192,7 @@ int server_creat(int pinum, int type, char *name)
         unsigned long new_block_addr;
         int k;
         for(k = 0; k < SUPERBLOCKPTR->num_data; k++){
-            if(get_bit(d_bm_addr, j)) continue; 
+            if(get_bit(d_bm_addr, k)) continue; 
     
             new_block = k + SUPERBLOCKPTR->data_region_addr;
             new_block_addr = new_block * UFS_BLOCK_SIZE;
@@ -201,7 +209,17 @@ int server_creat(int pinum, int type, char *name)
 	if(type == MFS_REGULAR_FILE){
         
         inode_num = get_new_inum();
-        
+		// if(inode_num==-1)
+		// {
+		// 	//printf("FULL\n");
+		// 	message_t send_back;
+		// 	send_back.type = MFS_CRET;
+		// 	send_back.inum = inode_num;
+		// 	send_back.rc = -1;
+		// 	UDP_Write(sd, &client_addr, (char*)&send_back, sizeof(message_t));
+		// 	return -1;
+		// }
+		//printf("File inode num: %d\n",inode_num);
         inode_t* new_inode = in_rn_addr + inode_num * sizeof(inode_t);
        
         new_inode->type = MFS_REGULAR_FILE;
@@ -211,14 +229,13 @@ int server_creat(int pinum, int type, char *name)
             new_inode->direct[i] = -1;
         }
         set_bit(in_bm_addr, inode_num);
-		
     }
 
 	 if(type == MFS_DIRECTORY){
         // add new inode
         inode_num = get_new_inum();
         inode_t* new_inode = in_rn_addr + inode_num * sizeof(inode_t);
-
+		//printf("Directory inode num: %d\n",inode_num);
         // type
         new_inode->type = MFS_DIRECTORY;
 
@@ -267,9 +284,11 @@ int server_creat(int pinum, int type, char *name)
 
 int server_lookup(int pinum, char *name)
 {
+	//printf("direct inum: %d new file name: %s\n",pinum, name);
 	inode_t* inode_parent = in_rn_addr + pinum *sizeof(inode_t);// get the parent inode
 	int size = inode_parent->size;
 	int entry_num = (UFS_BLOCK_SIZE / sizeof(dir_ent_t)) * (size / UFS_BLOCK_SIZE) + ((size % UFS_BLOCK_SIZE) / sizeof(dir_ent_t));
+	
 	int num_block = size / (UFS_BLOCK_SIZE + 1) + 1;
 	int data_blocks[num_block]; // stores the blocks' addr (in blocks)
     dir_ent_t* entries[entry_num];
@@ -278,25 +297,29 @@ int server_lookup(int pinum, char *name)
         data_blocks[i] = inode_parent->direct[i];
     }
 	int remain_entry = entry_num;
+	
 	for(int i=0;i<num_block;i++)
 	{
 		int curr_data_block = data_blocks[i];
 		unsigned long curr_data_block_offset = curr_data_block * UFS_BLOCK_SIZE;
-		unsigned long num_loop = (remain_entry < 32)? remain_entry:32;
+		unsigned long num_loop = (remain_entry < (UFS_BLOCK_SIZE/sizeof(dir_ent_t)))? remain_entry:(UFS_BLOCK_SIZE/sizeof(dir_ent_t));
+		printf("NUM TEST:%ld\n",(UFS_BLOCK_SIZE/sizeof(dir_ent_t)));
 		void* curr_data_addr = (void*)((unsigned long)curr_data_block_offset+(unsigned long)head);
 		for(int j=0;j<num_loop;j++)
 		{
-			entries[j+32*i] = (dir_ent_t*)curr_data_addr;
+			entries[j+128*i] = (dir_ent_t*)curr_data_addr;
 			remain_entry--;
 			curr_data_addr = (void*)curr_data_addr; // real address
 			curr_data_addr += sizeof(dir_ent_t);
 		}
 	}
+	
 	int found_name = 0;
 	void* result;
+	
 	for(int i=0;i<entry_num;i++)
 	{
-		
+		printf("Entry_inum:%d  Entry_name:%s\n",entries[i]->inum,entries[i]->name);
 		if(!strcmp(name, entries[i]->name))
 		{
 			found_name = 1;
@@ -305,7 +328,7 @@ int server_lookup(int pinum, char *name)
 			break;
 		}
 	}
-
+	
 	message_t send_back;
 	send_back.type = MFS_LOOKUP;
 	//printf("Server::lookup::found number is: %d\n",found_name);
@@ -355,7 +378,7 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 	int remainTowrite = nbytes;
 	//printf("1: %d 2: %d 3: %d\n",curr_block,curr_block_off,remainTowrite);
 	//get a new block
-	printf("curr_block:%d\n",curr_block);
+	//printf("curr_block:%d\n",curr_block);
 	if(curr_inode->direct[curr_block]==-1)
 	{
 		unsigned int new_blk = 0;
@@ -550,7 +573,8 @@ int main(int argc, char *argv[]) {
     d_bm_addr = head + SUPERBLOCKPTR->data_bitmap_addr * UFS_BLOCK_SIZE;
     in_rn_addr = head + SUPERBLOCKPTR->inode_region_addr * UFS_BLOCK_SIZE;
     d_rn_addr = head + SUPERBLOCKPTR->data_region_addr * UFS_BLOCK_SIZE;
-
+	//printf("INIT: in_bm_addr %p d_bm_addr %p in_rn_addr %p d_rn_addr %p \n",in_bm_addr, d_bm_addr, in_rn_addr,  d_rn_addr);
+	printf("SUPER INODE NUMBER :%d\n",SUPERBLOCKPTR->num_inodes);
     while (1) {
 		message_t m;
 		

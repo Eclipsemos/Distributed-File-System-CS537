@@ -51,6 +51,7 @@ int MFS_Lookup(int pinum, char *name) {
 }
 
 int MFS_Creat(int pinum, int type, char *name) {
+    
     if(pinum < 0) {
         return -1;
     }
@@ -58,18 +59,17 @@ int MFS_Creat(int pinum, int type, char *name) {
     if(name == NULL) {
         return -1;
     }
-
     if(strlen(name) > 28) {
         return -1;
     } 
 
-
+    
     message_t send_msg, received_msg;
     send_msg.mtype = MFS_CRET;
     send_msg.type = type;
     send_msg.pinum = pinum;
     strcpy(send_msg.name, name);
-
+    
     
     int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
     int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));

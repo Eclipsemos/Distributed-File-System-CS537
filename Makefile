@@ -37,8 +37,6 @@ clean:
 	rm ./libmfs.so
 	rm ./mkfs
 	rm -f ${PROGS} ${OBJS}
-	killall server	
-	killall server-fs
 
 visualize: compile
 	./mkfs -f test.img -v
