@@ -124,7 +124,7 @@ int MFS_Write(int inum, char *buffer, int offset, int nbytes) {
     message_t send_msg, received_msg;
     send_msg.mtype = MFS_WRITE;
     send_msg.inum = inum;
-    strcpy(send_msg.bufferSent,buffer);
+    memcpy(send_msg.bufferSent,buffer,nbytes);
     send_msg.nbytes = nbytes;
     send_msg.offset = offset;
     int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
@@ -160,10 +160,11 @@ int MFS_Read(int inum, char *buffer, int offset, int nbytes) {
     send_msg.mtype = MFS_READ;
     send_msg.inum = inum;
     send_msg.offset = offset;
+    send_msg.nbytes = nbytes;
     int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
     int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));
     //printf("Read result: %s\n",received_msg.bufferReceived);
-    strcpy(buffer,received_msg.bufferReceived);
+    memcpy(buffer,received_msg.bufferReceived,nbytes);
     return 0;
 }
 

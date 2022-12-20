@@ -27,7 +27,7 @@ static super_t* SUPERBLOCKPTR;
 int sd;
 int fd;
 void *image;
-
+int image_size;
 void* in_bm_addr; 
 void* d_bm_addr; 
 void* in_rn_addr; 
@@ -76,8 +76,8 @@ void set_bit(unsigned int *bitmap, int position) {
 }
 
 int server_shutdown(message_t* m){
-	fsync(fd);
 	close(fd);
+	msync(head, image_size, MS_SYNC);
 	UDP_Close(PORTNUM);
 	exit(0);
 	return 0;
@@ -256,6 +256,7 @@ int server_creat(int pinum, int type, char *name)
     }
 
 	//fprintf(stderr, "DEBUG server creat:: inode_num: %d\n", inode_num);
+	msync(head, image_size, MS_SYNC);
 	message_t send_back;
 	send_back.type = MFS_CRET;
 	send_back.inum = inode_num;
@@ -350,6 +351,7 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 	int remainTowrite = nbytes;
 	//printf("1: %d 2: %d 3: %d\n",curr_block,curr_block_off,remainTowrite);
 	//get a new block
+	//printf("curr_inode->direct[curr_block]:%d\n",curr_inode->direct[curr_block]);
 	if(curr_inode->direct[curr_block]==-1)
 	{
 		unsigned int new_blk = 0;
@@ -389,9 +391,10 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 				{
 					int new_blk = i+SUPERBLOCKPTR->data_region_addr;
 					used_another_block = new_blk;
-					curr_inode->direct[curr_block] = new_blk;
+					//printf("Write::new_blK: %d\n", new_blk);
+					curr_inode->direct[curr_block+1] = new_blk;
 					set_bit(d_bm_addr,i);
-					start_addr = curr_inode->direct[curr_block]*4096;
+					start_addr = new_blk*4096;
 
 					spaceleft = 4096;
 					found_next_block =1;
@@ -410,11 +413,11 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 	for(int i=0;i<nbytes;i++)
 	{
 		*(char*)(addr_tochange[i] + (unsigned long) head) = *(buffer+i);
-		//printf("%c\n",*(char*)(addr_tochange[i] + (unsigned long) head) );
+		//printf("%d : %c\n",i,*(char*)(addr_tochange[i] + (unsigned long) head) );
 	}
 		
 	curr_inode->size+=nbytes;
-
+	msync(head, image_size, MS_SYNC);
 	message_t send_back;
 	send_back.mtype = MFS_WRITE;
 	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
@@ -435,27 +438,33 @@ int server_read(int inum, char *buffer, int offset, int nbytes)
 	int curr_block = offset / UFS_BLOCK_SIZE;
 	int curr_block_off = offset%UFS_BLOCK_SIZE;
 	int remainToRead = nbytes;
-
-
+	//printf("1: %d 2: %d 3: %d\n",curr_block,curr_block_off,remainToRead);
+	
+	
 	unsigned long start_addr = curr_inode->direct[curr_block]*4096 + curr_block_off;
 	int read_counter = 0;
 	int spaceleft = 4096 - curr_block_off;
 	while(remainToRead>0)
 	{
+		//printf("RemainToRead: %d\n",remainToRead);
 		if(spaceleft>0)
 		{
-			spaceleft--;
-			*(buffer+read_counter++) =*(char*)(start_addr++ + (unsigned long) head);
-			//printf("Buffer read:%c  spaceleft: %d remainToRead:%d \n",*(buffer+read_counter-1),spaceleft, remainToRead);
-			remainToRead--;
+			
+			*(buffer+read_counter) =*(char*)(start_addr + (unsigned long) head);
+			read_counter++;
+			start_addr++;
+			//printf("Buffer:%c \n",*(buffer+read_counter-1));
+			remainToRead--;spaceleft--;
 		}
 		else
 		{
 			int i=1;
-			while(curr_inode->direct[curr_block+i]==-1)
+			while(curr_inode->direct[curr_block+i]==-1&&curr_block+i<30)
 			{
+				//printf("direct[%d] :%d\n",curr_block+i,curr_inode->direct[curr_block+i]);
 				i++;
 			}
+			//printf("Write blk: %d\n",curr_block+i);
 			start_addr = curr_inode->direct[curr_block+i] * 4096;
 			spaceleft = 4096;
 		}
@@ -464,7 +473,7 @@ int server_read(int inum, char *buffer, int offset, int nbytes)
 
 	message_t send_back;
 	send_back.mtype = MFS_READ;
-	strcpy(send_back.bufferReceived,buffer);
+	memcpy(send_back.bufferReceived,buffer,nbytes);
 	//printf("Read result: %s\n",send_back.bufferReceived);
 	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 	return 0;
@@ -513,7 +522,7 @@ int main(int argc, char *argv[]) {
     int rc = fstat(fd, &sbuf);
     assert(rc > -1);
 
-    int image_size = (int) sbuf.st_size;
+    image_size = (int) sbuf.st_size;
 
     head = mmap(NULL, image_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	SUPERBLOCKPTR = (super_t*) head;

@@ -11,9 +11,12 @@ make
 gcc -o mkfs mkfs.c -Wall
 gcc -o main main.c -Wall -L. -lmfs -g
 main.c: In function ‘main’:
-main.c:21:10: warning: unused variable ‘buffer_get’ [-Wunused-variable]
-   21 |     char buffer_get[4096];
-      |          ^~~~~~~~~~
+main.c:23:22: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘size_t’ {aka ‘long unsigned int’} [-Wformat=]
+   23 |     printf("Length: %d  SIZE: %d\n", strlen(buffer),MFS_BLOCK_SIZE);
+      |                     ~^               ~~~~~~~~~~~~~~
+      |                      |               |
+      |                      int             size_t {aka long unsigned int}
+      |                     %ld
 ./mkfs -f test.img
 total blocks        36
   inodes            32 [size of each: 128]
@@ -22,10 +25,10 @@ layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
 ldd main
-	linux-vdso.so.1 (0x00007fff25db5000)
-	libmfs.so => ./libmfs.so (0x00007f84d873c000)
-	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f84d84f7000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007f84d8748000)
+	linux-vdso.so.1 (0x00007ffe47ffa000)
+	libmfs.so => ./libmfs.so (0x00007f4b8e4e8000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4b8e2a3000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f4b8e4f4000)
 
 
 test build PASSED
@@ -45,8 +48,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5262
-/tmp/tmpdzffmM/p/server 5262 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6847
+/tmp/tmprd2vz1/p/server 6847 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test shutdown PASSED
@@ -66,8 +69,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9446
-/tmp/tmpdzffmM/p/server 9446 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8756
+/tmp/tmprd2vz1/p/server 8756 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test creat PASSED
@@ -87,16 +90,14 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6862
-/tmp/tmpdzffmM/p/server 6862 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8207
+/tmp/tmprd2vz1/p/server 8207 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 ('START BLOCK 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00END BLOCK 1')
-('START BLOCK 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
-Failure: Corrupt data returned by read
+('START BLOCK 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00END BLOCK 1')
 
 
-test write FAILED
+test write PASSED
  (write then read one block)
- Corrupt data returned by read
 
 ('starting', 'stat')
 
@@ -112,8 +113,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6167
-/tmp/tmpdzffmM/p/server 6167 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6878
+/tmp/tmprd2vz1/p/server 6878 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test stat PASSED
@@ -133,13 +134,12 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6759
-/tmp/tmpdzffmM/p/server 6759 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 9790
+/tmp/tmprd2vz1/p/server 9790 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
-test overwrite FAILED
+test overwrite PASSED
  (overwrite a block)
- Timelimit (10.0s) exceeded
 
 ('starting', 'maxfile')
 
@@ -155,13 +155,12 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9036
-/tmp/tmpdzffmM/p/server 9036 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 5804
+/tmp/tmprd2vz1/p/server 5804 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
-test maxfile FAILED
+test maxfile PASSED
  (write largest possible file)
- Timelimit (10.0s) exceeded
 
 ('starting', 'maxfile2')
 
@@ -177,8 +176,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6517
-/tmp/tmpdzffmM/p/server 6517 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8642
+/tmp/tmprd2vz1/p/server 8642 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 31
 write more than need
 Failure: MFS_Write should fail on inalid block number
@@ -202,8 +201,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9714
-/tmp/tmpdzffmM/p/server 9714 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 5367
+/tmp/tmprd2vz1/p/server 5367 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test dir1 PASSED
@@ -223,8 +222,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5891
-/tmp/tmpdzffmM/p/server 5891 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7217
+/tmp/tmprd2vz1/p/server 7217 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test dir2 PASSED
@@ -244,8 +243,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6149
-/tmp/tmpdzffmM/p/server 6149 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 5018
+/tmp/tmprd2vz1/p/server 5018 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test baddir PASSED
@@ -265,8 +264,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9757
-/tmp/tmpdzffmM/p/server 9757 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 5017
+/tmp/tmprd2vz1/p/server 5017 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test baddir2 PASSED
@@ -286,8 +285,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5438
-/tmp/tmpdzffmM/p/server 5438 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7980
+/tmp/tmprd2vz1/p/server 7980 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test unlink FAILED
@@ -309,8 +308,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5573
-/tmp/tmpdzffmM/p/server 5573 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7934
+/tmp/tmprd2vz1/p/server 7934 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test unlink2 FAILED
@@ -332,8 +331,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5523
-/tmp/tmpdzffmM/p/server 5523 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8693
+/tmp/tmprd2vz1/p/server 8693 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test empty FAILED
@@ -355,8 +354,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8909
-/tmp/tmpdzffmM/p/server 8909 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 5924
+/tmp/tmprd2vz1/p/server 5924 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test name PASSED
@@ -376,13 +375,16 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6667
-/tmp/tmpdzffmM/p/server 6667 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6440
+/tmp/tmprd2vz1/p/server 6440 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6440
+/tmp/tmprd2vz1/p/server 6440 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Failure: Wrong inum
 
 
 test persist FAILED
  (restart server after creating a file)
- Timelimit (30.0s) exceeded
+ Wrong inum
 
 ('starting', 'bigdir')
 
@@ -398,8 +400,8 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7892
-/tmp/tmpdzffmM/p/server 7892 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 9931
+/tmp/tmprd2vz1/p/server 9931 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test bigdir FAILED
@@ -420,8 +422,8 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8842
-/tmp/tmpdzffmM/p/server 8842 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7638
+/tmp/tmprd2vz1/p/server 7638 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test deep PASSED
@@ -438,20 +440,17 @@ test shutdown PASSED
 test creat PASSED
  (creat a file and check with lookup)
 
-test write FAILED
+test write PASSED
  (write then read one block)
- Corrupt data returned by read
 
 test stat PASSED
  (stat a regular file)
 
-test overwrite FAILED
+test overwrite PASSED
  (overwrite a block)
- Timelimit (10.0s) exceeded
 
-test maxfile FAILED
+test maxfile PASSED
  (write largest possible file)
- Timelimit (10.0s) exceeded
 
 test maxfile2 FAILED
  (write more blocks than possible)
@@ -486,7 +485,7 @@ test name PASSED
 
 test persist FAILED
  (restart server after creating a file)
- Timelimit (30.0s) exceeded
+ Wrong inum
 
 test bigdir FAILED
  (create a directory with 126 files)
@@ -495,5 +494,5 @@ test bigdir FAILED
 test deep PASSED
  (create many deeply nested directories)
 
-Passed 10 of 19 tests.
-Overall 10 of 19
+Passed 13 of 19 tests.
+Overall 13 of 19
