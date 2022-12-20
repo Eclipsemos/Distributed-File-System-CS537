@@ -341,8 +341,12 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 {
 	inode_t* curr_inode = in_rn_addr + inum*sizeof(inode_t);
 	//printf("buffer: %s",buffer);
-	if(curr_inode->type==MFS_DIRECTORY)
+	if(curr_inode->type==MFS_DIRECTORY||offset>curr_inode->size)
 	{
+		message_t send_back;
+		send_back.mtype = MFS_WRITE;
+		send_back.rc = -1;
+		UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 		return -1;//TODO: WRITE BAD RETURN
 	}
 	//image+inode.direct[offset/4096]*4096+offset%4096
@@ -351,7 +355,7 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 	int remainTowrite = nbytes;
 	//printf("1: %d 2: %d 3: %d\n",curr_block,curr_block_off,remainTowrite);
 	//get a new block
-	//printf("curr_inode->direct[curr_block]:%d\n",curr_inode->direct[curr_block]);
+	printf("curr_block:%d\n",curr_block);
 	if(curr_inode->direct[curr_block]==-1)
 	{
 		unsigned int new_blk = 0;
@@ -364,6 +368,14 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 				set_bit(d_bm_addr,i);
 				break;
 			}
+		}
+		if(new_blk==0)
+		{
+			message_t send_back;
+			send_back.mtype = MFS_WRITE;
+			send_back.rc = -1;
+			UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
+			return -1;//TODO: WRITE BAD RETURN
 		}
 	}
 	//printf("curr_inode->direct[curr_block]: %d\n",curr_inode->direct[curr_block]);
@@ -404,8 +416,11 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 
 			if(found_next_block==0)
 			{
-				//TODO: no space;
-				return -1;
+				message_t send_back;
+				send_back.mtype = MFS_WRITE;
+				send_back.rc = -1;
+				UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
+				return -1;//TODO: WRITE BAD RETURN
 			}
 		}
 	}
@@ -420,6 +435,7 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 	msync(head, image_size, MS_SYNC);
 	message_t send_back;
 	send_back.mtype = MFS_WRITE;
+	send_back.rc =1;
 	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 	return 0;
 }

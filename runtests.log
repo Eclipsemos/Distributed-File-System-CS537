@@ -25,10 +25,10 @@ layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
 ldd main
-	linux-vdso.so.1 (0x00007ffe47ffa000)
-	libmfs.so => ./libmfs.so (0x00007f4b8e4e8000)
-	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4b8e2a3000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007f4b8e4f4000)
+	linux-vdso.so.1 (0x00007ffed3b20000)
+	libmfs.so => ./libmfs.so (0x00007f2626648000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f2626403000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f2626654000)
 
 
 test build PASSED
@@ -48,8 +48,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6847
-/tmp/tmprd2vz1/p/server 6847 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 9570
+/tmp/tmpzGd0gT/p/server 9570 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test shutdown PASSED
@@ -69,8 +69,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8756
-/tmp/tmprd2vz1/p/server 8756 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6232
+/tmp/tmpzGd0gT/p/server 6232 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test creat PASSED
@@ -90,8 +90,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8207
-/tmp/tmprd2vz1/p/server 8207 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7119
+/tmp/tmpzGd0gT/p/server 7119 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+curr_block:0
 ('START BLOCK 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00END BLOCK 1')
 ('START BLOCK 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00END BLOCK 1')
 
@@ -113,8 +114,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6878
-/tmp/tmprd2vz1/p/server 6878 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8614
+/tmp/tmpzGd0gT/p/server 8614 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+curr_block:0
 
 
 test stat PASSED
@@ -134,8 +136,10 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9790
-/tmp/tmprd2vz1/p/server 9790 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7729
+/tmp/tmpzGd0gT/p/server 7729 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+curr_block:0
+curr_block:0
 
 
 test overwrite PASSED
@@ -155,8 +159,38 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5804
-/tmp/tmprd2vz1/p/server 5804 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7058
+/tmp/tmpzGd0gT/p/server 7058 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+curr_block:0
+curr_block:1
+curr_block:2
+curr_block:3
+curr_block:4
+curr_block:5
+curr_block:6
+curr_block:7
+curr_block:8
+curr_block:9
+curr_block:10
+curr_block:11
+curr_block:12
+curr_block:13
+curr_block:14
+curr_block:15
+curr_block:16
+curr_block:17
+curr_block:18
+curr_block:19
+curr_block:20
+curr_block:21
+curr_block:22
+curr_block:23
+curr_block:24
+curr_block:25
+curr_block:26
+curr_block:27
+curr_block:28
+curr_block:29
 
 
 test maxfile PASSED
@@ -176,16 +210,44 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8642
-/tmp/tmprd2vz1/p/server 8642 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 9018
+/tmp/tmpzGd0gT/p/server 9018 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+curr_block:0
+curr_block:1
+curr_block:2
+curr_block:3
+curr_block:4
+curr_block:5
+curr_block:6
+curr_block:7
+curr_block:8
+curr_block:9
+curr_block:10
+curr_block:11
+curr_block:12
+curr_block:13
+curr_block:14
+curr_block:15
+curr_block:16
+curr_block:17
+curr_block:18
+curr_block:19
+curr_block:20
+curr_block:21
+curr_block:22
+curr_block:23
+curr_block:24
+curr_block:25
+curr_block:26
+curr_block:27
+curr_block:28
+curr_block:29
 31
 write more than need
-Failure: MFS_Write should fail on inalid block number
 
 
-test maxfile2 FAILED
+test maxfile2 PASSED
  (write more blocks than possible)
- MFS_Write should fail on inalid block number
 
 ('starting', 'dir1')
 
@@ -201,8 +263,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5367
-/tmp/tmprd2vz1/p/server 5367 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8330
+/tmp/tmpzGd0gT/p/server 8330 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test dir1 PASSED
@@ -222,8 +284,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7217
-/tmp/tmprd2vz1/p/server 7217 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8448
+/tmp/tmpzGd0gT/p/server 8448 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test dir2 PASSED
@@ -243,8 +305,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5018
-/tmp/tmprd2vz1/p/server 5018 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7285
+/tmp/tmpzGd0gT/p/server 7285 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test baddir PASSED
@@ -264,8 +326,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5017
-/tmp/tmprd2vz1/p/server 5017 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6604
+/tmp/tmpzGd0gT/p/server 6604 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test baddir2 PASSED
@@ -285,8 +347,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7980
-/tmp/tmprd2vz1/p/server 7980 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8627
+/tmp/tmpzGd0gT/p/server 8627 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test unlink FAILED
@@ -308,8 +370,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7934
-/tmp/tmprd2vz1/p/server 7934 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 5656
+/tmp/tmpzGd0gT/p/server 5656 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test unlink2 FAILED
@@ -331,8 +393,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8693
-/tmp/tmprd2vz1/p/server 8693 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8128
+/tmp/tmpzGd0gT/p/server 8128 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test empty FAILED
@@ -354,8 +416,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5924
-/tmp/tmprd2vz1/p/server 5924 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6133
+/tmp/tmpzGd0gT/p/server 6133 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test name PASSED
@@ -375,10 +437,11 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6440
-/tmp/tmprd2vz1/p/server 6440 /home/xinyun/private/cs537/p4/CS537_P4/test.img
-Starting server on port 6440
-/tmp/tmprd2vz1/p/server 6440 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7729
+/tmp/tmpzGd0gT/p/server 7729 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+curr_block:0
+Starting server on port 7729
+/tmp/tmpzGd0gT/p/server 7729 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 Failure: Wrong inum
 
 
@@ -400,8 +463,8 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9931
-/tmp/tmprd2vz1/p/server 9931 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7828
+/tmp/tmpzGd0gT/p/server 7828 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test bigdir FAILED
@@ -422,8 +485,8 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7638
-/tmp/tmprd2vz1/p/server 7638 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8494
+/tmp/tmpzGd0gT/p/server 8494 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test deep PASSED
@@ -452,9 +515,8 @@ test overwrite PASSED
 test maxfile PASSED
  (write largest possible file)
 
-test maxfile2 FAILED
+test maxfile2 PASSED
  (write more blocks than possible)
- MFS_Write should fail on inalid block number
 
 test dir1 PASSED
  (check root for dot entries)
@@ -494,5 +556,5 @@ test bigdir FAILED
 test deep PASSED
  (create many deeply nested directories)
 
-Passed 13 of 19 tests.
-Overall 13 of 19
+Passed 14 of 19 tests.
+Overall 14 of 19

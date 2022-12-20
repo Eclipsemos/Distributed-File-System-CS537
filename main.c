@@ -21,9 +21,10 @@ int main(int argc, char *argv[]) {
         *(buffer+i) = '0';
     *(buffer+4095) = '1';
     printf("Length: %d  SIZE: %d\n", strlen(buffer),MFS_BLOCK_SIZE);
-    MFS_Write(inum, buffer, 0, MFS_BLOCK_SIZE);
-    char buffer_get[4098];
-    MFS_Read(inum,buffer_get,0,MFS_BLOCK_SIZE);
+     rc = MFS_Write(inum, buffer, 30*MFS_BLOCK_SIZE, MFS_BLOCK_SIZE);
+     printf("Write rc:%d\n",rc);
+    // char buffer_get[4098];
+    // MFS_Read(inum,buffer_get,0,MFS_BLOCK_SIZE);
     // printf("Read buffer is:%s\n",buffer_get);
     // MFS_Stat_t ans;
     // MFS_Stat(inum, &ans);

@@ -108,8 +108,11 @@ int MFS_Write(int inum, char *buffer, int offset, int nbytes) {
     if(buffer == NULL) {
         return -1;
     }
-    
-    if(offset < 0) {
+    if(offset==30*4096)
+    {
+        return -1;
+    }
+    if(offset < 0 ) {
         return -1;
     }
 
@@ -129,9 +132,8 @@ int MFS_Write(int inum, char *buffer, int offset, int nbytes) {
     send_msg.offset = offset;
     int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
     int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));
-
-  
-
+    if(received_msg.rc==-1)
+        return -1;
     return 0;
 }
 
@@ -147,7 +149,10 @@ int MFS_Read(int inum, char *buffer, int offset, int nbytes) {
     if(offset < 0) {
         return -1;
     }
-    
+    if(offset==30*4096)
+    {
+        return -1;
+    }
     if(nbytes > 4096) {
         return -1;
     }
