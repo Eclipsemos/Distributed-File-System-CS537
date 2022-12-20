@@ -18,11 +18,10 @@
 
 #define BLOCKSIZE (4096)
 
-struct sockaddr_in send_addr;
+struct sockaddr_in client_addr;
 
 void* head;
 static int PORTNUM;
-bool isShutdown = false;
 
 static super_t* SUPERBLOCKPTR;
 int sd;
@@ -50,7 +49,6 @@ void intHandler(int dummy) {
     UDP_Close(sd);
     exit(130);
 }
-
 
 
 unsigned int get_bit(unsigned int *bitmap, int position) {
@@ -122,13 +120,17 @@ int server_creat(int pinum, int type, char *name)
 		if(!strcmp(name, entries[i]->name))
 		{
 			found_name = 1;
-			
 			break;
 		}
 	}
 
 	if(found_name==1)
 	{
+		printf("Server::create:: ALEADY EXISTED\n");
+		message_t msg;
+		msg.type = MFS_CRET;
+		msg.rc = 1;
+		UDP_Write(sd,&client_addr,(char*)&msg,sizeof(message_t));
 		return 0; //found the success
 	}
 	
@@ -137,8 +139,15 @@ int server_creat(int pinum, int type, char *name)
 	int parent_type = parent->type;
 	if(parent_type!=MFS_DIRECTORY)
 	{
+		message_t send_back;
+		send_back.rc = -1;
+		send_back.type = MFS_CRET;
+		UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
+		///fix me
 		return -1;
 	}
+
+
 
 	//find the place to add
 	int next_free_block = 0;
@@ -193,7 +202,7 @@ int server_creat(int pinum, int type, char *name)
 	if(type == MFS_REGULAR_FILE){
         // add new inode
         inode_num = get_new_inum();
-        //fprintf(stderr, "DEBUG server creat:: inode_num: %d\n", inode_num);
+        
         inode_t* new_inode = in_rn_addr + inode_num * sizeof(inode_t);
         // type
         new_inode->type = MFS_REGULAR_FILE;
@@ -203,6 +212,7 @@ int server_creat(int pinum, int type, char *name)
             new_inode->direct[i] = -1;
         }
         set_bit(in_bm_addr, inode_num);
+		
     }
 
 	 if(type == MFS_DIRECTORY){
@@ -248,11 +258,79 @@ int server_creat(int pinum, int type, char *name)
         set_bit(d_bm_addr, data_num);
     }
 
-	//UDP_Write(sd, &caddr, (char*)&reply, sizeof(MFS_Msg_t));
+	fprintf(stderr, "DEBUG server creat:: inode_num: %d\n", inode_num);
+	message_t send_back;
+	send_back.type = MFS_CRET;
+	send_back.inum = inode_num;
+	send_back.rc = 0;
+	UDP_Write(sd, &client_addr, (char*)&send_back, sizeof(message_t));
+	return 0;
+}
+
+int server_lookup(int pinum, char *name)
+{
+	inode_t* inode_parent = in_rn_addr + pinum *sizeof(inode_t);// get the parent inode
+	int size = inode_parent->size;
+	int entry_num = (UFS_BLOCK_SIZE / sizeof(dir_ent_t)) * (size / UFS_BLOCK_SIZE) + ((size % UFS_BLOCK_SIZE) / sizeof(dir_ent_t));
+	int num_block = size / (UFS_BLOCK_SIZE + 1) + 1;
+	int data_blocks[num_block]; // stores the blocks' addr (in blocks)
+    dir_ent_t* entries[entry_num];
+    for(int i = 0; i < num_block; i++)
+	{
+        data_blocks[i] = inode_parent->direct[i];
+    }
+	int remain_entry = entry_num;
+	for(int i=0;i<num_block;i++)
+	{
+		int curr_data_block = data_blocks[i];
+		unsigned long curr_data_block_offset = curr_data_block * UFS_BLOCK_SIZE;
+		unsigned long num_loop = (remain_entry < 32)? remain_entry:32;
+		void* curr_data_addr = (void*)((unsigned long)curr_data_block_offset+(unsigned long)head);
+		for(int j=0;j<num_loop;j++)
+		{
+			entries[j+32*i] = (dir_ent_t*)curr_data_addr;
+			remain_entry--;
+			curr_data_addr = (void*)curr_data_addr; // real address
+			curr_data_addr += sizeof(dir_ent_t);
+		}
+	}
+	int found_name = 0;
+	void* result;
+	for(int i=0;i<entry_num;i++)
+	{
+		
+		if(!strcmp(name, entries[i]->name))
+		{
+			found_name = 1;
+			
+			result = (void*)entries[i];
+			break;
+		}
+	}
+
+	message_t send_back;
+	send_back.type = MFS_LOOKUP;
+	//printf("Server::lookup::found number is: %d\n",found_name);
+	if(found_name==0)
+	{
+		send_back.inum = -1;
+		UDP_Write(sd,&client_addr,(void*)&send_back,sizeof(message_t));
+		return -1; //Look up failed
+	}
+	
+	send_back.inum = ((dir_ent_t*)result)->inum;
+	printf("Server::lookup::sendback inum is: %d\n",send_back.inum);
+	
+	UDP_Write(sd, &client_addr,(char*)&send_back,sizeof(message_t));
 	return 0;
 }
 
 
+
+int server_write(int inum, char *buffer, int offset, int nbytes)
+{
+	return 0;
+}
 
 
 int message_parser(message_t* msg){
@@ -262,13 +340,13 @@ int message_parser(message_t* msg){
 	if(message_func == MFS_INIT){
 		return 0;
 	}else if(message_func == MFS_LOOKUP){
-		//rc = server_lookup(m);
+		rc = server_lookup(msg->pinum,msg->name);
 
 	}else if(message_func == MFS_STAT){
 		//rc = run_stat(m);
 
 	}else if(message_func == MFS_WRITE){
-		//rc = run_write(m);
+		rc = server_write(msg->inum,msg->name,msg->offset,msg->nbytes);
 
 	}else if(message_func == MFS_READ){
 		//rc = run_read(m);
@@ -293,7 +371,6 @@ int main(int argc, char *argv[]) {
 	
 	fd = open(argv[2], O_RDWR);
     assert(fd > -1);
-
     struct stat sbuf;
     int rc = fstat(fd, &sbuf);
     assert(rc > -1);
@@ -312,18 +389,12 @@ int main(int argc, char *argv[]) {
     d_rn_addr = head + SUPERBLOCKPTR->data_region_addr * UFS_BLOCK_SIZE;
 
     while (1) {
-		struct sockaddr_in addr;
-
 		message_t m;
 		
-		int rc = UDP_Read(sd, &addr, (char *) &m, sizeof(message_t));
+		int rc = UDP_Read(sd, &client_addr, (char *) &m, sizeof(message_t));
 		if (rc > 0) 
 		{
 			rc = message_parser(&m);
-
-			m.rc = rc;
-			
-			rc = UDP_Write(sd, &addr, (char *) &m, sizeof(message_t));
 		} 
 	}
 	return 0; 

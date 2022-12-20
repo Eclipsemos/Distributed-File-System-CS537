@@ -10,11 +10,18 @@ Trying to build project using make
 make
 gcc -o mkfs mkfs.c -Wall
 gcc -o main main.c -Wall -L. -lmfs -g
+./mkfs -f test.img
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
 ldd main
-	linux-vdso.so.1 (0x00007ffc6f3bf000)
-	libmfs.so => ./libmfs.so (0x00007f283bc41000)
-	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f283b9fd000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007f283bc4d000)
+	linux-vdso.so.1 (0x00007ffce66a5000)
+	libmfs.so => ./libmfs.so (0x00007f46e4399000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f46e4155000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f46e43a5000)
 
 
 test build PASSED
@@ -34,8 +41,8 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7288
-/tmp/tmpsfeY6m/p/server 7288 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7872
+/tmp/tmpvpToq_/p/server 7872 /home/xinyun/private/cs537/p4/CS537_P4/test.img
 
 
 test shutdown PASSED
@@ -55,8 +62,11 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8291
-/tmp/tmpsfeY6m/p/server 8291 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8527
+/tmp/tmpvpToq_/p/server 8527 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+Server::lookup::sendback inum is: 1
+Client::lookup::msg received inum is: 1
 
 
 test creat PASSED
@@ -76,14 +86,638 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7243
-/tmp/tmpsfeY6m/p/server 7243 /home/xinyun/private/cs537/p4/CS537_P4/test.img
-Failure: MFS_Write returned failure inum=0 block=0
+Starting server on port 5859
+/tmp/tmpvpToq_/p/server 5859 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
 
 
 test write FAILED
  (write then read one block)
- MFS_Write returned failure inum=0 block=0
+ Timelimit (10.0s) exceeded
 
-Skipped 15 tests.
-To keep testing after failing a test, use flag '-c' or '--continue'
+('starting', 'stat')
+
+**********************************************************************
+
+Test stat
+stat a regular file
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+client:: MFS_Stat READ failed; libmfs.c
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 7027
+/tmp/tmpvpToq_/p/server 7027 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+
+
+test stat FAILED
+ (stat a regular file)
+ Timelimit (10.0s) exceeded
+
+('starting', 'overwrite')
+
+**********************************************************************
+
+Test overwrite
+overwrite a block
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+client:: MFS_Stat READ failed; libmfs.c
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 5779
+/tmp/tmpvpToq_/p/server 5779 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+
+
+test overwrite FAILED
+ (overwrite a block)
+ Timelimit (10.0s) exceeded
+
+('starting', 'maxfile')
+
+**********************************************************************
+
+Test maxfile
+write largest possible file
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+client:: MFS_Stat READ failed; libmfs.c
+total blocks        39
+  inodes            128 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 9834
+/tmp/tmpvpToq_/p/server 9834 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+
+
+test maxfile FAILED
+ (write largest possible file)
+ Timelimit (10.0s) exceeded
+
+('starting', 'maxfile2')
+
+**********************************************************************
+
+Test maxfile2
+write more blocks than possible
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+client:: MFS_Stat READ failed; libmfs.c
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 6639
+/tmp/tmpvpToq_/p/server 6639 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+
+
+test maxfile2 FAILED
+ (write more blocks than possible)
+ Timelimit (10.0s) exceeded
+
+('starting', 'dir1')
+
+**********************************************************************
+
+Test dir1
+check root for dot entries
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+31
+client:: MFS_Stat READ failed; libmfs.c
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 7178
+/tmp/tmpvpToq_/p/server 7178 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Server::lookup::sendback inum is: 0
+Server::lookup::sendback inum is: 0
+Client::lookup::msg received inum is: 0
+Client::lookup::msg received inum is: 0
+
+
+test dir1 PASSED
+ (check root for dot entries)
+
+('starting', 'dir2')
+
+**********************************************************************
+
+Test dir2
+create a new directory and check it
+
+**********************************************************************
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 6720
+/tmp/tmpvpToq_/p/server 6720 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+Server::lookup::sendback inum is: 1
+Server::lookup::sendback inum is: 1
+Server::lookup::sendback inum is: 0
+Client::lookup::msg received inum is: 1
+Client::lookup::msg received inum is: 1
+Client::lookup::msg received inum is: 0
+
+
+test dir2 PASSED
+ (create a new directory and check it)
+
+('starting', 'baddir')
+
+**********************************************************************
+
+Test baddir
+try to create a file with a file parent inode
+
+**********************************************************************
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 8973
+/tmp/tmpvpToq_/p/server 8973 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+Server::lookup::sendback inum is: 1
+Client::lookup::msg received inum is: 1
+
+
+test baddir PASSED
+ (try to create a file with a file parent inode)
+
+('starting', 'baddir2')
+
+**********************************************************************
+
+Test baddir2
+try to lookup a file with a file parent inode
+
+**********************************************************************
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 5653
+/tmp/tmpvpToq_/p/server 5653 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+Server::lookup::sendback inum is: 1
+Client::lookup::msg received inum is: 1
+Client::lookup::msg received inum is: -1
+
+
+test baddir2 PASSED
+ (try to lookup a file with a file parent inode)
+
+('starting', 'unlink')
+
+**********************************************************************
+
+Test unlink
+unlink a file
+
+**********************************************************************
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 5645
+/tmp/tmpvpToq_/p/server 5645 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+
+
+test unlink FAILED
+ (unlink a file)
+ Timelimit (10.0s) exceeded
+
+('starting', 'unlink2')
+
+**********************************************************************
+
+Test unlink2
+unlink a directory
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+client:: MFS_Stat READ failed; libmfs.c
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 8169
+/tmp/tmpvpToq_/p/server 8169 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+
+
+test unlink2 FAILED
+ (unlink a directory)
+ Timelimit (10.0s) exceeded
+
+('starting', 'empty')
+
+**********************************************************************
+
+Test empty
+unlink a non-empty directory
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+client:: MFS_Stat READ failed; libmfs.c
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 9300
+/tmp/tmpvpToq_/p/server 9300 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+DEBUG server creat:: inode_num: 2
+
+
+test empty FAILED
+ (unlink a non-empty directory)
+ Timelimit (10.0s) exceeded
+
+('starting', 'name')
+
+**********************************************************************
+
+Test name
+name too long
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+Client::lookup::msg received inum is: 2
+client:: MFS_Stat READ failed; libmfs.c
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 9799
+/tmp/tmpvpToq_/p/server 9799 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+
+
+test name PASSED
+ (name too long)
+
+('starting', 'persist')
+
+**********************************************************************
+
+Test persist
+restart server after creating a file
+
+**********************************************************************
+total blocks        36
+  inodes            32 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 7290
+/tmp/tmpvpToq_/p/server 7290 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+
+
+test persist FAILED
+ (restart server after creating a file)
+ Timelimit (30.0s) exceeded
+
+('starting', 'bigdir')
+
+**********************************************************************
+
+Test bigdir
+create a directory with 126 files
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+client:: MFS_Stat READ failed; libmfs.c
+total blocks        39
+  inodes            128 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 5156
+/tmp/tmpvpToq_/p/server 5156 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+DEBUG server creat:: inode_num: 2
+DEBUG server creat:: inode_num: 3
+DEBUG server creat:: inode_num: 4
+DEBUG server creat:: inode_num: 5
+DEBUG server creat:: inode_num: 6
+DEBUG server creat:: inode_num: 7
+DEBUG server creat:: inode_num: 8
+DEBUG server creat:: inode_num: 9
+DEBUG server creat:: inode_num: 10
+DEBUG server creat:: inode_num: 11
+DEBUG server creat:: inode_num: 12
+DEBUG server creat:: inode_num: 13
+DEBUG server creat:: inode_num: 14
+DEBUG server creat:: inode_num: 15
+DEBUG server creat:: inode_num: 16
+DEBUG server creat:: inode_num: 17
+DEBUG server creat:: inode_num: 18
+DEBUG server creat:: inode_num: 19
+DEBUG server creat:: inode_num: 20
+DEBUG server creat:: inode_num: 21
+DEBUG server creat:: inode_num: 22
+DEBUG server creat:: inode_num: 23
+DEBUG server creat:: inode_num: 24
+DEBUG server creat:: inode_num: 25
+DEBUG server creat:: inode_num: 26
+DEBUG server creat:: inode_num: 27
+DEBUG server creat:: inode_num: 28
+DEBUG server creat:: inode_num: 29
+DEBUG server creat:: inode_num: 30
+DEBUG server creat:: inode_num: 31
+DEBUG server creat:: inode_num: 32
+DEBUG server creat:: inode_num: 33
+DEBUG server creat:: inode_num: 34
+DEBUG server creat:: inode_num: 35
+DEBUG server creat:: inode_num: 36
+DEBUG server creat:: inode_num: 37
+DEBUG server creat:: inode_num: 38
+DEBUG server creat:: inode_num: 39
+DEBUG server creat:: inode_num: 40
+DEBUG server creat:: inode_num: 41
+DEBUG server creat:: inode_num: 42
+DEBUG server creat:: inode_num: 43
+DEBUG server creat:: inode_num: 44
+DEBUG server creat:: inode_num: 45
+DEBUG server creat:: inode_num: 46
+DEBUG server creat:: inode_num: 47
+DEBUG server creat:: inode_num: 48
+DEBUG server creat:: inode_num: 49
+DEBUG server creat:: inode_num: 50
+DEBUG server creat:: inode_num: 51
+DEBUG server creat:: inode_num: 52
+DEBUG server creat:: inode_num: 53
+DEBUG server creat:: inode_num: 54
+DEBUG server creat:: inode_num: 55
+DEBUG server creat:: inode_num: 56
+DEBUG server creat:: inode_num: 57
+DEBUG server creat:: inode_num: 58
+DEBUG server creat:: inode_num: 59
+DEBUG server creat:: inode_num: 60
+DEBUG server creat:: inode_num: 61
+DEBUG server creat:: inode_num: 62
+DEBUG server creat:: inode_num: 63
+DEBUG server creat:: inode_num: 64
+DEBUG server creat:: inode_num: 65
+DEBUG server creat:: inode_num: 66
+DEBUG server creat:: inode_num: 67
+DEBUG server creat:: inode_num: 68
+DEBUG server creat:: inode_num: 69
+DEBUG server creat:: inode_num: 70
+DEBUG server creat:: inode_num: 71
+DEBUG server creat:: inode_num: 72
+DEBUG server creat:: inode_num: 73
+DEBUG server creat:: inode_num: 74
+DEBUG server creat:: inode_num: 75
+DEBUG server creat:: inode_num: 76
+DEBUG server creat:: inode_num: 77
+DEBUG server creat:: inode_num: 78
+DEBUG server creat:: inode_num: 79
+DEBUG server creat:: inode_num: 80
+DEBUG server creat:: inode_num: 81
+DEBUG server creat:: inode_num: 82
+DEBUG server creat:: inode_num: 83
+DEBUG server creat:: inode_num: 84
+DEBUG server creat:: inode_num: 85
+DEBUG server creat:: inode_num: 86
+DEBUG server creat:: inode_num: 87
+DEBUG server creat:: inode_num: 88
+DEBUG server creat:: inode_num: 89
+DEBUG server creat:: inode_num: 90
+DEBUG server creat:: inode_num: 91
+DEBUG server creat:: inode_num: 92
+DEBUG server creat:: inode_num: 93
+DEBUG server creat:: inode_num: 94
+DEBUG server creat:: inode_num: 95
+DEBUG server creat:: inode_num: 96
+DEBUG server creat:: inode_num: 97
+DEBUG server creat:: inode_num: 98
+DEBUG server creat:: inode_num: 99
+DEBUG server creat:: inode_num: 100
+DEBUG server creat:: inode_num: 101
+DEBUG server creat:: inode_num: 102
+DEBUG server creat:: inode_num: 103
+DEBUG server creat:: inode_num: 104
+DEBUG server creat:: inode_num: 105
+DEBUG server creat:: inode_num: 106
+DEBUG server creat:: inode_num: 107
+DEBUG server creat:: inode_num: 108
+DEBUG server creat:: inode_num: 109
+DEBUG server creat:: inode_num: 110
+DEBUG server creat:: inode_num: 111
+DEBUG server creat:: inode_num: 112
+DEBUG server creat:: inode_num: 113
+DEBUG server creat:: inode_num: 114
+DEBUG server creat:: inode_num: 115
+DEBUG server creat:: inode_num: 116
+DEBUG server creat:: inode_num: 117
+DEBUG server creat:: inode_num: 118
+DEBUG server creat:: inode_num: 119
+DEBUG server creat:: inode_num: 120
+DEBUG server creat:: inode_num: 121
+DEBUG server creat:: inode_num: 122
+DEBUG server creat:: inode_num: 123
+DEBUG server creat:: inode_num: 124
+DEBUG server creat:: inode_num: 125
+DEBUG server creat:: inode_num: 126
+DEBUG server creat:: inode_num: 127
+
+
+test bigdir FAILED
+ (create a directory with 126 files)
+ Timelimit (180.0s) exceeded
+
+('starting', 'deep')
+
+**********************************************************************
+
+Test deep
+create many deeply nested directories
+
+**********************************************************************
+Client::lookup::msg received inum is: 1
+Client::lookup::msg received inum is: 2
+Client::lookup::msg received inum is: 3
+Client::lookup::msg received inum is: 4
+Client::lookup::msg received inum is: 5
+Client::lookup::msg received inum is: 6
+Client::lookup::msg received inum is: 7
+Client::lookup::msg received inum is: 8
+Client::lookup::msg received inum is: 9
+Client::lookup::msg received inum is: 10
+Client::lookup::msg received inum is: 11
+Client::lookup::msg received inum is: 12
+Client::lookup::msg received inum is: 13
+Client::lookup::msg received inum is: 14
+Client::lookup::msg received inum is: 15
+Client::lookup::msg received inum is: 16
+Client::lookup::msg received inum is: 17
+Client::lookup::msg received inum is: 18
+Client::lookup::msg received inum is: 19
+Client::lookup::msg received inum is: 20
+Client::lookup::msg received inum is: 21
+Client::lookup::msg received inum is: 22
+Client::lookup::msg received inum is: 23
+Client::lookup::msg received inum is: 24
+Client::lookup::msg received inum is: 25
+Client::lookup::msg received inum is: 26
+Client::lookup::msg received inum is: 27
+Client::lookup::msg received inum is: 28
+Client::lookup::msg received inum is: 29
+Client::lookup::msg received inum is: 30
+Client::lookup::msg received inum is: 31
+Client::lookup::msg received inum is: 31
+total blocks        39
+  inodes            128 [size of each: 128]
+  data blocks       32
+layout details
+  inode bitmap address/len 1 [1]
+  data bitmap address/len  2 [1]
+Starting server on port 7761
+/tmp/tmpvpToq_/p/server 7761 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+DEBUG server creat:: inode_num: 1
+DEBUG server creat:: inode_num: 2
+DEBUG server creat:: inode_num: 3
+DEBUG server creat:: inode_num: 4
+DEBUG server creat:: inode_num: 5
+Server::lookup::sendback inum is: 1
+Server::lookup::sendback inum is: 2
+Server::lookup::sendback inum is: 3
+Server::lookup::sendback inum is: 4
+Server::lookup::sendback inum is: 5
+Server::lookup::sendback inum is: 1
+Server::lookup::sendback inum is: 2
+Server::lookup::sendback inum is: 3
+Server::lookup::sendback inum is: 4
+Server::lookup::sendback inum is: 5
+Client::lookup::msg received inum is: 1
+Client::lookup::msg received inum is: 2
+Client::lookup::msg received inum is: 3
+Client::lookup::msg received inum is: 4
+Client::lookup::msg received inum is: 5
+Client::lookup::msg received inum is: 1
+Client::lookup::msg received inum is: 2
+Client::lookup::msg received inum is: 3
+Client::lookup::msg received inum is: 4
+Client::lookup::msg received inum is: 5
+
+
+test deep PASSED
+ (create many deeply nested directories)
+
+**********************************************************************
+Summary:
+test build PASSED
+ (build project using make)
+
+test shutdown PASSED
+ (init server and client then call shutdown)
+
+test creat PASSED
+ (creat a file and check with lookup)
+
+test write FAILED
+ (write then read one block)
+ Timelimit (10.0s) exceeded
+
+test stat FAILED
+ (stat a regular file)
+ Timelimit (10.0s) exceeded
+
+test overwrite FAILED
+ (overwrite a block)
+ Timelimit (10.0s) exceeded
+
+test maxfile FAILED
+ (write largest possible file)
+ Timelimit (10.0s) exceeded
+
+test maxfile2 FAILED
+ (write more blocks than possible)
+ Timelimit (10.0s) exceeded
+
+test dir1 PASSED
+ (check root for dot entries)
+
+test dir2 PASSED
+ (create a new directory and check it)
+
+test baddir PASSED
+ (try to create a file with a file parent inode)
+
+test baddir2 PASSED
+ (try to lookup a file with a file parent inode)
+
+test unlink FAILED
+ (unlink a file)
+ Timelimit (10.0s) exceeded
+
+test unlink2 FAILED
+ (unlink a directory)
+ Timelimit (10.0s) exceeded
+
+test empty FAILED
+ (unlink a non-empty directory)
+ Timelimit (10.0s) exceeded
+
+test name PASSED
+ (name too long)
+
+test persist FAILED
+ (restart server after creating a file)
+ Timelimit (30.0s) exceeded
+
+test bigdir FAILED
+ (create a directory with 126 files)
+ Timelimit (180.0s) exceeded
+
+test deep PASSED
+ (create many deeply nested directories)
+
+Passed 9 of 19 tests.
+Overall 9 of 19

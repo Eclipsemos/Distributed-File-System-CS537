@@ -18,7 +18,7 @@ ${PROGS} : % : %.o Makefile.net
 compile: libmfs.so
 	gcc -o mkfs mkfs.c -Wall
 	gcc -o main main.c -Wall -L. -lmfs -g
-
+	./mkfs -f test.img
 	ldd main
 
 export:

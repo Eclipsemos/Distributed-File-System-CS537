@@ -37,26 +37,48 @@ int MFS_Lookup(int pinum, char *name) {
         return -1;
     }
     
-    message_t msg;
-    msg.mtype = MFS_LOOKUP;
-    msg.pinum = pinum;
-    strcpy(msg.name, name);
+    message_t send_msg, received_msg;
+    send_msg.mtype = MFS_LOOKUP;
+    send_msg.pinum = pinum;
+    strcpy(send_msg.name, name);
 
-    rc = UDP_Write(sd, &addrSnd, (char*) &msg, sizeof(message_t));
 
-    if(rc < 0) {
-        printf("client:: MFS_Lookup WRITE failed; libmfs.c\n");
+    int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
+    int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));
+    printf("Client::lookup::msg received inum is: %d\n",received_msg.inum);
+   
+    return received_msg.inum; 
+}
+
+int MFS_Creat(int pinum, int type, char *name) {
+    if(pinum < 0) {
         return -1;
     }
 
-    rc = UDP_Read(sd, &addrRcv, (char*) &msg, sizeof(message_t));
-
-    if(rc < 0) {
-        printf("client:: MFS_Lookup READ failed; libmfs.c\n");
+    if(name == NULL) {
         return -1;
     }
 
-    return msg.inum; 
+    if(strlen(name) > 28) {
+        return -1;
+    } 
+
+
+    message_t send_msg, received_msg;
+    send_msg.mtype = MFS_CRET;
+    send_msg.type = type;
+    send_msg.pinum = pinum;
+    strcpy(send_msg.name, name);
+
+    
+    int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
+    int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));
+    if(received_msg.rc == -1)
+    {
+        return -1;
+    }
+    //printf("Client::created node is:%d\n",received_msg.inum);
+    return 0;
 }
 
 int MFS_Stat(int inum, MFS_Stat_t *m) {
@@ -184,42 +206,6 @@ int MFS_Read(int inum, char *buffer, int offset, int nbytes) {
     }
     printf("buffer: %s\n",buffer);
 
-    return msg.rc;
-}
-
-int MFS_Creat(int pinum, int type, char *name) {
-    if(pinum < 0) {
-        return -1;
-    }
-
-    if(name == NULL) {
-        return -1;
-    }
-
-    if(strlen(name) > 28) {
-        return -1;
-    } 
-
-    message_t msg;
-    msg.pinum = pinum;
-    msg.type = type;
-    strcpy(msg.name, name);
-    msg.mtype = MFS_CRET;
-    
-    rc = UDP_Write(sd, &addrSnd, (char*) &msg, sizeof(message_t));
-
-    if(rc < 0) {
-        printf("client:: MFS_Stat WRITE failed; libmfs.c\n");
-        return -1;
-    }
-
-    rc = UDP_Read(sd, &addrRcv, (char*) &msg, sizeof(message_t));
-
-    if(rc < 0) {
-        printf("client:: MFS_Stat READ failed; libmfs.c\n");
-        return -1;
-    }
-    
     return msg.rc;
 }
 
