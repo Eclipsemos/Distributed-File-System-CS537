@@ -45,7 +45,7 @@ int MFS_Lookup(int pinum, char *name) {
 
     int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
     int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));
-    printf("Client::lookup::msg received inum is: %d\n",received_msg.inum);
+    //printf("Client::lookup::msg received inum is: %d\n",received_msg.inum);
    
     return received_msg.inum; 
 }
@@ -90,28 +90,14 @@ int MFS_Stat(int inum, MFS_Stat_t *m) {
         return -1;
     }
 
-    message_t msg;
-    msg.pinum = inum;
-    msg.mtype = MFS_STAT;
-
-    rc = UDP_Write(sd, &addrSnd, (char*) &msg, sizeof(message_t));
-
-    if(rc < 0) {
-        printf("client:: MFS_Stat WRITE failed; libmfs.c\n");
-        return -1;
-    }
-
-    rc = UDP_Read(sd, &addrRcv, (char*) &msg, sizeof(message_t));
-    
-    if(rc < 0) {
-        printf("client:: MFS_Stat READ failed; libmfs.c\n");
-        return -1;
-    }
-
-    m->type = msg.mfs_stat.type;
-    m->size = msg.mfs_stat.size;
-
-    return msg.rc;
+    message_t send_msg, received_msg;
+    send_msg.mtype = MFS_STAT;
+    send_msg.inum = inum;
+    int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
+    int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));
+    *m = received_msg.mfs_stat;
+    //printf("1: %d, 2: %d\n",m->type, m->size);
+    return 0;
 }
 
 int MFS_Write(int inum, char *buffer, int offset, int nbytes) {
@@ -135,28 +121,18 @@ int MFS_Write(int inum, char *buffer, int offset, int nbytes) {
         return -1;
     }
 
-    message_t msg;
-    msg.pinum = inum;
-    strcpy(msg.bufferSent, buffer);
-    msg.offset = offset;
-    msg.nbytes = nbytes;
-    msg.mtype = MFS_WRITE;
+    message_t send_msg, received_msg;
+    send_msg.mtype = MFS_WRITE;
+    send_msg.inum = inum;
+    strcpy(send_msg.bufferSent,buffer);
+    send_msg.nbytes = nbytes;
+    send_msg.offset = offset;
+    int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
+    int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));
 
-    rc = UDP_Write(sd, &addrSnd, (char*) &msg, sizeof(message_t));
+  
 
-    if(rc < 0) {
-        printf("client:: MFS_Stat WRITE failed; libmfs.c\n");
-        return -1;
-    }
-
-    rc = UDP_Read(sd, &addrRcv, (char*) &msg, sizeof(message_t));
-
-    if(rc < 0) {
-        printf("client:: MFS_Stat READ failed; libmfs.c\n");
-        return -1;
-    }
-
-    return msg.rc;
+    return 0;
 }
 
 int MFS_Read(int inum, char *buffer, int offset, int nbytes) {
@@ -180,33 +156,15 @@ int MFS_Read(int inum, char *buffer, int offset, int nbytes) {
         return -1;
     }
 
-    message_t msg;
-    msg.pinum = inum;
-    strcpy(msg.bufferSent, buffer);
-    msg.offset = offset;
-    msg.nbytes = nbytes;
-    msg.mtype = MFS_READ;
-
-    rc = UDP_Write(sd, &addrSnd, (char*) &msg, sizeof(message_t));
-
-    if(rc < 0) {
-        printf("client:: MFS_Stat WRITE failed; libmfs.c\n");
-        return -1;
-    }
-
-    rc = UDP_Read(sd, &addrRcv, (char*) &msg, sizeof(message_t));
-
-    if(rc < 0) {
-        printf("client:: MFS_Stat READ failed; libmfs.c\n");
-        return -1;
-    }
-
-    for(int z = 0; z< nbytes; z++) {
-        buffer[z] = msg.bufferReceived[z];
-    }
-    printf("buffer: %s\n",buffer);
-
-    return msg.rc;
+    message_t send_msg, received_msg;
+    send_msg.mtype = MFS_READ;
+    send_msg.inum = inum;
+    send_msg.offset = offset;
+    int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
+    int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));
+    //printf("Read result: %s\n",received_msg.bufferReceived);
+    strcpy(buffer,received_msg.bufferReceived);
+    return 0;
 }
 
 int MFS_Unlink(int pinum, char *name) {

@@ -126,7 +126,7 @@ int server_creat(int pinum, int type, char *name)
 
 	if(found_name==1)
 	{
-		printf("Server::create:: ALEADY EXISTED\n");
+		//printf("Server::create:: ALEADY EXISTED\n");
 		message_t msg;
 		msg.type = MFS_CRET;
 		msg.rc = 1;
@@ -161,7 +161,6 @@ int server_creat(int pinum, int type, char *name)
 	unsigned long dir_block = parent->direct[next_free_block];
     unsigned long block_offset = dir_block * UFS_BLOCK_SIZE;
 
-	//dir_ent_t* entries[entry_left];
 	void* dir_block_addr = (void*)(block_offset+(unsigned long)head);
 	int j=0;
 	for( j=0;j<entry_left;j++)
@@ -185,8 +184,8 @@ int server_creat(int pinum, int type, char *name)
         unsigned long new_block_addr;
         int k;
         for(k = 0; k < SUPERBLOCKPTR->num_data; k++){
-            if(get_bit(d_bm_addr, j)) continue; // jth data block is used, continue find
-            // use jth data block
+            if(get_bit(d_bm_addr, j)) continue; 
+    
             new_block = k + SUPERBLOCKPTR->data_region_addr;
             new_block_addr = new_block * UFS_BLOCK_SIZE;
             break;                   
@@ -200,13 +199,13 @@ int server_creat(int pinum, int type, char *name)
 	int inode_num;
 
 	if(type == MFS_REGULAR_FILE){
-        // add new inode
+        
         inode_num = get_new_inum();
         
         inode_t* new_inode = in_rn_addr + inode_num * sizeof(inode_t);
-        // type
+       
         new_inode->type = MFS_REGULAR_FILE;
-        // size
+    
         new_inode->size = 0;
         for(int i = 0; i < 30; i++){
             new_inode->direct[i] = -1;
@@ -229,36 +228,34 @@ int server_creat(int pinum, int type, char *name)
 		int ans = -1;
 		for(int i = 0; i < SUPERBLOCKPTR->num_data; i++)
 		{
-        int bit = get_bit(d_bm_addr, i);
-        if(bit == 0)
-		{
-			ans = i;
-			break;
-		}
+        	int bit = get_bit(d_bm_addr, i);
+        	if(bit == 0)
+			{
+				ans = i;
+				break;
+			}
 		}
 
 		int data_num = ans;
-        void* data_addr_ptr = (void*)(unsigned long)(d_rn_addr + data_num * MFS_BLOCK_SIZE); // TODO: Check this
+        void* data_addr_ptr = (void*)(unsigned long)(d_rn_addr + data_num * MFS_BLOCK_SIZE); 
         // write in . and .. in data region
         dir_ent_t* entry1 = (dir_ent_t*)data_addr_ptr;
         entry1->inum = get_new_inum();
         strcpy(entry1->name, ".");
-        void* data_addr_ptr2 = (void*)(unsigned long)(d_rn_addr + data_num * MFS_BLOCK_SIZE + sizeof(dir_ent_t)); // TODO: Check this
+        void* data_addr_ptr2 = (void*)(unsigned long)(d_rn_addr + data_num * MFS_BLOCK_SIZE + sizeof(dir_ent_t));
         dir_ent_t* entry2 = (dir_ent_t*)data_addr_ptr2;
         entry2->inum = pinum;
         strcpy(entry2->name, "..");
 
-        // dir
         new_inode->direct[0] = data_num + SUPERBLOCKPTR->data_region_addr;
         for(int i = 1; i < 30; i++){
             new_inode->direct[i] = -1;
         }
-        // update inode and data bitmap
         set_bit(in_bm_addr, inode_num);
         set_bit(d_bm_addr, data_num);
     }
 
-	fprintf(stderr, "DEBUG server creat:: inode_num: %d\n", inode_num);
+	//fprintf(stderr, "DEBUG server creat:: inode_num: %d\n", inode_num);
 	message_t send_back;
 	send_back.type = MFS_CRET;
 	send_back.inum = inode_num;
@@ -319,16 +316,157 @@ int server_lookup(int pinum, char *name)
 	}
 	
 	send_back.inum = ((dir_ent_t*)result)->inum;
-	printf("Server::lookup::sendback inum is: %d\n",send_back.inum);
+	//printf("Server::lookup::sendback inum is: %d\n",send_back.inum);
 	
 	UDP_Write(sd, &client_addr,(char*)&send_back,sizeof(message_t));
 	return 0;
 }
 
 
+int server_stat(int inum)
+{
+	MFS_Stat_t stat_ans;
+	inode_t* curr_inode = in_rn_addr+ inum *sizeof(inode_t);
+	stat_ans.type = curr_inode->type;
+	stat_ans.size = curr_inode->size;
+	message_t send_back;
+	send_back.mfs_stat = stat_ans;
+	send_back.mtype = MFS_STAT;
+	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
+	return 0;
+}
 
 int server_write(int inum, char *buffer, int offset, int nbytes)
 {
+	inode_t* curr_inode = in_rn_addr + inum*sizeof(inode_t);
+	//printf("buffer: %s",buffer);
+	if(curr_inode->type==MFS_DIRECTORY)
+	{
+		return -1;//TODO: WRITE BAD RETURN
+	}
+	//image+inode.direct[offset/4096]*4096+offset%4096
+	int curr_block = offset / UFS_BLOCK_SIZE;
+	int curr_block_off = offset%UFS_BLOCK_SIZE;
+	int remainTowrite = nbytes;
+	//printf("1: %d 2: %d 3: %d\n",curr_block,curr_block_off,remainTowrite);
+	//get a new block
+	if(curr_inode->direct[curr_block]==-1)
+	{
+		unsigned int new_blk = 0;
+		for(int i=0;i< SUPERBLOCKPTR->num_data;i++)
+		{
+			if(get_bit(d_bm_addr,i)==0)
+			{
+				new_blk = SUPERBLOCKPTR->data_region_addr+i;
+				curr_inode->direct[curr_block] = new_blk;
+				set_bit(d_bm_addr,i);
+				break;
+			}
+		}
+	}
+	//printf("curr_inode->direct[curr_block]: %d\n",curr_inode->direct[curr_block]);
+	unsigned long start_addr = curr_inode->direct[curr_block]*4096 + curr_block_off;
+	unsigned long addr_tochange[nbytes+2];
+	int addr_counter = 0;
+	int spaceleft = 4096 - curr_block_off;
+	int used_another_block = 0;
+	while(remainTowrite>0)
+	{
+		if(spaceleft>0)
+		{
+			spaceleft--;
+			addr_tochange[addr_counter++] = start_addr++;
+			remainTowrite--;
+			//printf("remainTowrite:%d ,spaceleft:%d\n",remainTowrite, spaceleft);
+		}
+		else
+		{
+			used_another_block = 1;
+			int found_next_block =0;
+			for(int i=0;i< SUPERBLOCKPTR->num_data;i++)
+			{
+				if(get_bit(d_bm_addr,i)==0)
+				{
+					int new_blk = i+SUPERBLOCKPTR->data_region_addr;
+					used_another_block = new_blk;
+					curr_inode->direct[curr_block] = new_blk;
+					set_bit(d_bm_addr,i);
+					start_addr = curr_inode->direct[curr_block]*4096;
+
+					spaceleft = 4096;
+					found_next_block =1;
+					break;
+				}
+			}
+
+			if(found_next_block==0)
+			{
+				//TODO: no space;
+				return -1;
+			}
+		}
+	}
+	set_bit(d_bm_addr,used_another_block);
+	for(int i=0;i<nbytes;i++)
+	{
+		*(char*)(addr_tochange[i] + (unsigned long) head) = *(buffer+i);
+		//printf("%c\n",*(char*)(addr_tochange[i] + (unsigned long) head) );
+	}
+		
+	curr_inode->size+=nbytes;
+
+	message_t send_back;
+	send_back.mtype = MFS_WRITE;
+	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
+	return 0;
+}
+
+
+
+int server_read(int inum, char *buffer, int offset, int nbytes)
+{
+	inode_t* curr_inode = in_rn_addr + inum*sizeof(inode_t);
+
+	if(curr_inode->type==MFS_DIRECTORY)
+	{
+		return -1;//TODO: WRITE BAD RETURN
+	}
+	//image+inode.direct[offset/4096]*4096+offset%4096
+	int curr_block = offset / UFS_BLOCK_SIZE;
+	int curr_block_off = offset%UFS_BLOCK_SIZE;
+	int remainToRead = nbytes;
+
+
+	unsigned long start_addr = curr_inode->direct[curr_block]*4096 + curr_block_off;
+	int read_counter = 0;
+	int spaceleft = 4096 - curr_block_off;
+	while(remainToRead>0)
+	{
+		if(spaceleft>0)
+		{
+			spaceleft--;
+			*(buffer+read_counter++) =*(char*)(start_addr++ + (unsigned long) head);
+			//printf("Buffer read:%c  spaceleft: %d remainToRead:%d \n",*(buffer+read_counter-1),spaceleft, remainToRead);
+			remainToRead--;
+		}
+		else
+		{
+			int i=1;
+			while(curr_inode->direct[curr_block+i]==-1)
+			{
+				i++;
+			}
+			start_addr = curr_inode->direct[curr_block+i] * 4096;
+			spaceleft = 4096;
+		}
+	}
+
+
+	message_t send_back;
+	send_back.mtype = MFS_READ;
+	strcpy(send_back.bufferReceived,buffer);
+	//printf("Read result: %s\n",send_back.bufferReceived);
+	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 	return 0;
 }
 
@@ -343,13 +481,13 @@ int message_parser(message_t* msg){
 		rc = server_lookup(msg->pinum,msg->name);
 
 	}else if(message_func == MFS_STAT){
-		//rc = run_stat(m);
+		rc = server_stat(msg->inum);
 
 	}else if(message_func == MFS_WRITE){
-		rc = server_write(msg->inum,msg->name,msg->offset,msg->nbytes);
+		rc = server_write(msg->inum,msg->bufferSent,msg->offset,msg->nbytes);
 
 	}else if(message_func == MFS_READ){
-		//rc = run_read(m);
+		rc = server_read(msg->inum,msg->bufferReceived,msg->offset,msg->nbytes);
 
 	}else if(message_func == MFS_CRET){
 		rc = server_creat(msg->pinum,msg->type,msg->name);
