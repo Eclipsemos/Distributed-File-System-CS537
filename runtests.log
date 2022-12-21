@@ -10,6 +10,10 @@ Trying to build project using make
 make
 gcc -o mkfs mkfs.c -Wall
 gcc -o main main.c -Wall -L. -lmfs -g
+main.c: In function ‘main’:
+main.c:14:9: warning: variable ‘new_inum’ set but not used [-Wunused-but-set-variable]
+   14 |     int new_inum = MFS_Lookup(0,"testfile");
+      |         ^~~~~~~~
 ./mkfs -f test.img
 total blocks        36
   inodes            32 [size of each: 128]
@@ -18,10 +22,10 @@ layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
 ldd main
-	linux-vdso.so.1 (0x00007ffdf4ba7000)
-	libmfs.so => ./libmfs.so (0x00007f5a9b531000)
-	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f5a9b2ec000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007f5a9b53d000)
+	linux-vdso.so.1 (0x00007ffe6c345000)
+	libmfs.so => ./libmfs.so (0x00007fbc3d357000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fbc3d112000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007fbc3d363000)
 
 
 test build PASSED
@@ -41,8 +45,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8199
-/tmp/tmpKWoQ77/p/server 8199 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6273
+/tmp/tmp3iVE0v/p/server 6273 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 6273
 
 
 test shutdown PASSED
@@ -62,8 +67,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 7027
-/tmp/tmpKWoQ77/p/server 7027 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7830
+/tmp/tmp3iVE0v/p/server 7830 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 7830
 
 
 test creat PASSED
@@ -83,8 +89,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 9361
-/tmp/tmpKWoQ77/p/server 9361 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8426
+/tmp/tmp3iVE0v/p/server 8426 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 8426
 ('START BLOCK 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00END BLOCK 1')
 ('START BLOCK 1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00END BLOCK 1')
 
@@ -106,8 +113,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6166
-/tmp/tmpKWoQ77/p/server 6166 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8944
+/tmp/tmp3iVE0v/p/server 8944 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 8944
 
 
 test stat PASSED
@@ -127,8 +135,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6570
-/tmp/tmpKWoQ77/p/server 6570 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6147
+/tmp/tmp3iVE0v/p/server 6147 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 6147
 
 
 test overwrite PASSED
@@ -148,8 +157,9 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6418
-/tmp/tmpKWoQ77/p/server 6418 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7930
+/tmp/tmp3iVE0v/p/server 7930 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 7930
 
 
 test maxfile PASSED
@@ -169,8 +179,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6713
-/tmp/tmpKWoQ77/p/server 6713 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6740
+/tmp/tmp3iVE0v/p/server 6740 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 6740
 31
 write more than need
 
@@ -192,8 +203,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5402
-/tmp/tmpKWoQ77/p/server 5402 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 9396
+/tmp/tmp3iVE0v/p/server 9396 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 9396
 
 
 test dir1 PASSED
@@ -213,8 +225,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6171
-/tmp/tmpKWoQ77/p/server 6171 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 6973
+/tmp/tmp3iVE0v/p/server 6973 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 6973
 
 
 test dir2 PASSED
@@ -234,8 +247,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6318
-/tmp/tmpKWoQ77/p/server 6318 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 9136
+/tmp/tmp3iVE0v/p/server 9136 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 9136
 
 
 test baddir PASSED
@@ -255,8 +269,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8429
-/tmp/tmpKWoQ77/p/server 8429 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 5050
+/tmp/tmp3iVE0v/p/server 5050 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 5050
 
 
 test baddir2 PASSED
@@ -276,8 +291,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8081
-/tmp/tmpKWoQ77/p/server 8081 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8306
+/tmp/tmp3iVE0v/p/server 8306 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 8306
 
 
 test unlink PASSED
@@ -297,8 +313,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6639
-/tmp/tmpKWoQ77/p/server 6639 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8220
+/tmp/tmp3iVE0v/p/server 8220 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 8220
 
 
 test unlink2 PASSED
@@ -318,8 +335,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8060
-/tmp/tmpKWoQ77/p/server 8060 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7782
+/tmp/tmp3iVE0v/p/server 7782 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 7782
 
 
 test empty PASSED
@@ -339,8 +357,9 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8480
-/tmp/tmpKWoQ77/p/server 8480 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8888
+/tmp/tmp3iVE0v/p/server 8888 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 8888
 
 
 test name PASSED
@@ -360,16 +379,16 @@ total blocks        36
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 6632
-/tmp/tmpKWoQ77/p/server 6632 /home/xinyun/private/cs537/p4/CS537_P4/test.img
-Starting server on port 6632
-/tmp/tmpKWoQ77/p/server 6632 /home/xinyun/private/cs537/p4/CS537_P4/test.img
-Failure: Wrong inum
+Starting server on port 7281
+/tmp/tmp3iVE0v/p/server 7281 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 7281
+Starting server on port 7281
+/tmp/tmp3iVE0v/p/server 7281 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 7281
 
 
-test persist FAILED
+test persist PASSED
  (restart server after creating a file)
- Wrong inum
 
 ('starting', 'bigdir')
 
@@ -385,8 +404,9 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 5196
-/tmp/tmpKWoQ77/p/server 5196 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 7250
+/tmp/tmp3iVE0v/p/server 7250 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 7250
 
 
 test bigdir PASSED
@@ -406,8 +426,9 @@ total blocks        39
 layout details
   inode bitmap address/len 1 [1]
   data bitmap address/len  2 [1]
-Starting server on port 8021
-/tmp/tmpKWoQ77/p/server 8021 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Starting server on port 8166
+/tmp/tmp3iVE0v/p/server 8166 /home/xinyun/private/cs537/p4/CS537_P4/test.img
+Good: 8166
 
 
 test deep PASSED
@@ -463,9 +484,8 @@ test empty PASSED
 test name PASSED
  (name too long)
 
-test persist FAILED
+test persist PASSED
  (restart server after creating a file)
- Wrong inum
 
 test bigdir PASSED
  (create a directory with 126 files)
@@ -473,5 +493,5 @@ test bigdir PASSED
 test deep PASSED
  (create many deeply nested directories)
 
-Passed 18 of 19 tests.
-Overall 18 of 19
+Passed 19 of 19 tests.
+Overall 19 of 19

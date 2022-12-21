@@ -77,9 +77,11 @@ void set_bit(unsigned int *bitmap, int position) {
 }
 
 int server_shutdown(message_t* m){
+	fsync(fd);
 	close(fd);
 	msync(head, image_size, MS_SYNC);
 	UDP_Close(PORTNUM);
+	printf("Good: %d\n",PORTNUM);
 	exit(0);
 	return 0;
 }
@@ -134,6 +136,7 @@ int server_creat(int pinum, int type, char *name)
 		message_t msg;
 		msg.type = MFS_CRET;
 		msg.rc = 1;
+		msync(head, image_size, MS_SYNC);
 		UDP_Write(sd,&client_addr,(char*)&msg,sizeof(message_t));
 		return 0; //found the success
 	}
@@ -146,6 +149,7 @@ int server_creat(int pinum, int type, char *name)
 		message_t send_back;
 		send_back.rc = -1;
 		send_back.type = MFS_CRET;
+		msync(head, image_size, MS_SYNC);
 		UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 		///fix me
 		return -1;
@@ -278,6 +282,7 @@ int server_creat(int pinum, int type, char *name)
 	send_back.type = MFS_CRET;
 	send_back.inum = inode_num;
 	send_back.rc = 0;
+	msync(head, image_size, MS_SYNC);
 	UDP_Write(sd, &client_addr, (char*)&send_back, sizeof(message_t));
 	return 0;
 }
@@ -335,13 +340,14 @@ int server_lookup(int pinum, char *name)
 	if(found_name==0)
 	{
 		send_back.inum = -1;
+		msync(head, image_size, MS_SYNC);
 		UDP_Write(sd,&client_addr,(void*)&send_back,sizeof(message_t));
 		return -1; //Look up failed
 	}
 	
 	send_back.inum = ((dir_ent_t*)result)->inum;
 	//printf("Server::lookup::sendback inum is: %d\n",send_back.inum);
-	
+	msync(head, image_size, MS_SYNC);
 	UDP_Write(sd, &client_addr,(char*)&send_back,sizeof(message_t));
 	return 0;
 }
@@ -356,6 +362,7 @@ int server_stat(int inum)
 	message_t send_back;
 	send_back.mfs_stat = stat_ans;
 	send_back.mtype = MFS_STAT;
+	msync(head, image_size, MS_SYNC);
 	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 	return 0;
 }
@@ -369,6 +376,7 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 		message_t send_back;
 		send_back.mtype = MFS_WRITE;
 		send_back.rc = -1;
+		msync(head, image_size, MS_SYNC);
 		UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 		return -1;//TODO: WRITE BAD RETURN
 	}
@@ -397,6 +405,7 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 			message_t send_back;
 			send_back.mtype = MFS_WRITE;
 			send_back.rc = -1;
+			msync(head, image_size, MS_SYNC);
 			UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 			return -1;//TODO: WRITE BAD RETURN
 		}
@@ -442,6 +451,7 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 				message_t send_back;
 				send_back.mtype = MFS_WRITE;
 				send_back.rc = -1;
+				msync(head, image_size, MS_SYNC);
 				UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 				return -1;//TODO: WRITE BAD RETURN
 			}
@@ -459,6 +469,7 @@ int server_write(int inum, char *buffer, int offset, int nbytes)
 	message_t send_back;
 	send_back.mtype = MFS_WRITE;
 	send_back.rc =1;
+	msync(head, image_size, MS_SYNC);
 	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 	return 0;
 }
@@ -514,6 +525,7 @@ int server_read(int inum, char *buffer, int offset, int nbytes)
 	send_back.mtype = MFS_READ;
 	memcpy(send_back.bufferReceived,buffer,nbytes);
 	//printf("Read result: %s\n",send_back.bufferReceived);
+	msync(head, image_size, MS_SYNC);
 	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 	return 0;
 }
@@ -566,6 +578,7 @@ int server_unlink(int pinum, char *name)
 		message_t send_back;
 		send_back.rc = -1;
 		send_back.mtype = MFS_UNLINK;
+		msync(head, image_size, MS_SYNC);
 		UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 		return -1;
 	}
@@ -596,6 +609,7 @@ int server_unlink(int pinum, char *name)
 	message_t send_back;
 	send_back.mtype = MFS_UNLINK;
 	send_back.rc=0;
+	msync(head, image_size, MS_SYNC);
 	UDP_Write(sd,&client_addr,(char*)&send_back,sizeof(message_t));
 	if(parent_block_index==0)
 		return -1;

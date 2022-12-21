@@ -12,6 +12,7 @@
 
 struct sockaddr_in addrSnd, addrRcv;
 int sd, rc;
+int client_port;
 
 int MFS_Init(char *hostname, int port) {
     if(hostname == NULL) {
@@ -21,8 +22,12 @@ int MFS_Init(char *hostname, int port) {
     if(port < 0) {
         return -1;
     }
-
-    sd = UDP_Open(20000);
+    int min_port = 20001;
+    int max_port = 40000;
+    srand(time(0));
+    client_port = (rand()%(max_port-min_port)+min_port);
+    sd = UDP_Open(client_port);
+    
     rc = UDP_FillSockAddr(&addrSnd, hostname, port);
     
     return rc;
@@ -198,10 +203,11 @@ int MFS_Shutdown() {
     msg.mtype = MFS_SHUTDOWN;
 
     rc = UDP_Write(sd, &addrSnd, (char*) &msg, sizeof(message_t));
+    UDP_Close(sd);
     if(rc < 0){
         printf("client:: MFS_Shutdown failed; libmfs.c\n");
         return -1;
     }
-
+    
     return 0;
 }
