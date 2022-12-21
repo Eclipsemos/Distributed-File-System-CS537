@@ -248,9 +248,6 @@ int server_creat(int pinum, int type, char *name)
         set_bit(in_bm_addr, inode_num);
     }
 
-	 
-
-	//fprintf(stderr, "DEBUG server creat:: inode_num: %d\n", inode_num);
 	msync(head, image_size, MS_SYNC);
 	message_t send_back;
 	send_back.type = MFS_CRET;
