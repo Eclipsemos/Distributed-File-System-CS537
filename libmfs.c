@@ -70,7 +70,7 @@ int MFS_Creat(int pinum, int type, char *name) {
 
     
     message_t send_msg, received_msg;
-    send_msg.mtype = MFS_CRET;
+    send_msg.mtype = MFS_CREAT;
     send_msg.type = type;
     send_msg.pinum = pinum;
     strcpy(send_msg.name, name);
