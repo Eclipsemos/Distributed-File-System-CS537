@@ -182,26 +182,15 @@ int MFS_Unlink(int pinum, char *name) {
         return -1;
     }
 
-    message_t msg;
-    msg.pinum = pinum;
-    strcpy(msg.name, name);
-    msg.mtype = MFS_UNLINK;
-
-    rc = UDP_Write(sd, &addrSnd, (char*) &msg, sizeof(message_t));
-
-    if(rc < 0) {
-        printf("client:: MFS_Stat WRITE failed; libmfs.c\n");
+    message_t send_msg, received_msg;
+    send_msg.mtype = MFS_UNLINK;
+    send_msg.pinum = pinum;
+    strcpy(send_msg.name,name);
+    int send_rc = UDP_Write(sd, &addrSnd, (char*) &send_msg, sizeof(message_t));
+    int received_rc = UDP_Read(sd, &addrRcv, (char*) &received_msg, sizeof(message_t));
+    if(received_msg.rc==-1)
         return -1;
-    }
-
-    rc = UDP_Read(sd, &addrRcv, (char*) &msg, sizeof(message_t));
-
-    if(rc < 0) {
-        printf("client:: MFS_Stat READ failed; libmfs.c\n");
-        return -1;
-    }
-
-    return msg.rc;
+    return 0;
 }
 
 int MFS_Shutdown() {
